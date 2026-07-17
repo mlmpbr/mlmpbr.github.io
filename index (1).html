@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mário Mello — Cientista de Dados & IA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #111118;
+            --bg-card: #16161f;
+            --bg-hover: #1e1e2a;
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --accent-glow: rgba(99, 102, 241, 0.3);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #1e293b;
+            --gradient-1: #6366f1;
+            --gradient-2: #8b5cf6;
+            --gradient-3: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --hf: #FFBD59;
+            --gcloud: #4285F4;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Background */
+        .bg-animation {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden;
+        }
+        .bg-animation::before {
+            content: '';
+            position: absolute; top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(236, 72, 153, 0.04) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(1deg); }
+            66% { transform: translate(-20px, 20px) rotate(-1deg); }
+        }
+
+        /* Particles */
+        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        .particle {
+            position: absolute; width: 2px; height: 2px;
+            background: var(--accent); border-radius: 50%; opacity: 0.3;
+            animation: particle-float 15s linear infinite;
+        }
+        @keyframes particle-float {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 0.3; } 90% { opacity: 0.3; }
+            100% { transform: translateY(-10vh) translateX(100px); opacity: 0; }
+        }
+
+        /* Navbar */
+        nav {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            padding: 1rem 2rem;
+            background: rgba(10, 10, 15, 0.8); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border); transition: all 0.3s ease;
+        }
+        nav.scrolled { padding: 0.75rem 2rem; background: rgba(10, 10, 15, 0.95); }
+        .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo {
+            font-size: 1.5rem; font-weight: 800;
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2), var(--gradient-3));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a {
+            color: var(--text-secondary); text-decoration: none; font-weight: 500; font-size: 0.9rem;
+            transition: color 0.3s ease; position: relative;
+        }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px;
+            background: linear-gradient(90deg, var(--gradient-1), var(--gradient-2)); transition: width 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--text-primary); }
+        .nav-links a:hover::after { width: 100%; }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            text-align: center; padding: 6rem 2rem 4rem; position: relative;
+        }
+        .hero-content { max-width: 850px; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 1rem; background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 50px;
+            font-size: 0.85rem; color: var(--accent-light); margin-bottom: 1.5rem;
+            animation: fadeInUp 0.6s ease;
+        }
+        .hero-badge .dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } }
+        .hero h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; line-height: 1.1; margin-bottom: 1rem; animation: fadeInUp 0.6s ease 0.1s both; }
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2), var(--gradient-3));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero-subtitle { font-size: clamp(1.1rem, 2.5vw, 1.5rem); color: var(--text-secondary); margin-bottom: 1.5rem; animation: fadeInUp 0.6s ease 0.2s both; }
+        .hero-description { font-size: 1.05rem; color: var(--text-muted); max-width: 650px; margin: 0 auto 2.5rem; animation: fadeInUp 0.6s ease 0.3s both; }
+        .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; animation: fadeInUp 0.6s ease 0.4s both; }
+        .btn {
+            padding: 0.875rem 2rem; border-radius: 12px; font-weight: 600; font-size: 0.95rem;
+            text-decoration: none; transition: all 0.3s ease; cursor: pointer; border: none;
+            display: inline-flex; align-items: center; gap: 0.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            color: white; box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5); }
+        .btn-secondary { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: var(--bg-hover); border-color: var(--accent); transform: translateY(-2px); }
+        .btn-hf { background: rgba(255, 189, 89, 0.1); color: var(--hf); border: 1px solid rgba(255, 189, 89, 0.3); }
+        .btn-hf:hover { background: rgba(255, 189, 89, 0.2); border-color: var(--hf); transform: translateY(-2px); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .scroll-indicator { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); animation: bounce 2s ease-in-out infinite; }
+        .scroll-indicator svg { width: 24px; height: 24px; color: var(--text-muted); }
+        @keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(10px); } }
+
+        /* Sections */
+        section { padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 3rem; }
+        .section-label {
+            display: inline-block; padding: 0.25rem 0.75rem;
+            background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 50px; font-size: 0.8rem; color: var(--accent-light);
+            font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.75rem;
+        }
+        .section-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; margin-bottom: 1rem; }
+        .section-subtitle { color: var(--text-secondary); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+
+        /* Journey Timeline */
+        .journey-section { padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; }
+        .journey-timeline {
+            position: relative; padding-left: 2rem;
+        }
+        .journey-timeline::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+            width: 2px; background: linear-gradient(180deg, var(--gradient-1), var(--gradient-2), var(--gradient-3));
+        }
+        .journey-item {
+            position: relative; padding-bottom: 3rem; padding-left: 2rem;
+            opacity: 0; transform: translateX(20px); transition: all 0.6s ease;
+        }
+        .journey-item.active { opacity: 1; transform: translateX(0); }
+        .journey-item::before {
+            content: ''; position: absolute; left: -2rem; top: 0.5rem;
+            width: 12px; height: 12px; border-radius: 50%; background: var(--bg-card);
+            border: 3px solid var(--accent); transform: translateX(-5px);
+        }
+        .journey-item h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary); }
+        .journey-item .journey-tag {
+            display: inline-block; padding: 0.2rem 0.6rem; border-radius: 6px;
+            font-size: 0.75rem; font-weight: 600; margin-bottom: 0.75rem;
+        }
+        .journey-item .tag-private { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .journey-item .tag-social { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.2); }
+        .journey-item .tag-public { background: rgba(99, 102, 241, 0.1); color: var(--accent-light); border: 1px solid rgba(99, 102, 241, 0.2); }
+        .journey-item p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; }
+        .journey-arrow {
+            text-align: center; font-size: 1.5rem; color: var(--accent); margin: 1rem 0;
+            animation: bounce-arrow 2s ease-in-out infinite;
+        }
+        @keyframes bounce-arrow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+
+        /* About Grid */
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+        .about-text { font-size: 1.05rem; color: var(--text-secondary); line-height: 1.8; }
+        .about-text p { margin-bottom: 1rem; }
+        .about-highlights { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .highlight-card {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+            padding: 1.5rem; transition: all 0.3s ease;
+        }
+        .highlight-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 10px 40px rgba(99, 102, 241, 0.1); }
+        .highlight-icon {
+            width: 48px; height: 48px; background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; margin-bottom: 1rem;
+        }
+        .highlight-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .highlight-card p { font-size: 0.9rem; color: var(--text-muted); }
+
+        /* Skills */
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .skill-category {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
+            padding: 2rem; transition: all 0.3s ease;
+        }
+        .skill-category:hover { border-color: var(--accent); box-shadow: 0 10px 40px rgba(99, 102, 241, 0.08); }
+        .skill-category-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; }
+        .skill-category-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .skill-category h3 { font-size: 1.1rem; font-weight: 700; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .skill-tag {
+            padding: 0.4rem 0.8rem; background: var(--bg-secondary); border: 1px solid var(--border);
+            border-radius: 8px; font-size: 0.8rem; color: var(--text-secondary); transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .skill-tag:hover { border-color: var(--accent); color: var(--accent-light); background: rgba(99, 102, 241, 0.05); }
+
+        /* Projects */
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
+        .project-card {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 24px;
+            overflow: hidden; transition: all 0.4s ease; position: relative;
+        }
+        .project-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--gradient-1), var(--gradient-2), var(--gradient-3));
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .project-card:hover::before { opacity: 1; }
+        .project-card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 20px 60px rgba(99, 102, 241, 0.15); }
+        .project-header { padding: 2rem 2rem 1rem; }
+        .project-icon { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 1rem; }
+        .project-card h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .project-card .project-desc { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; padding: 0 2rem; }
+        .project-features { list-style: none; padding: 0 2rem; margin-bottom: 1.5rem; }
+        .project-features li { display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem; }
+        .project-features li::before { content: '✓'; color: var(--success); font-weight: 700; }
+        .project-footer { padding: 1rem 2rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .project-stack { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .project-stack span { padding: 0.25rem 0.6rem; background: var(--bg-secondary); border-radius: 6px; font-size: 0.75rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+        .project-link { color: var(--accent-light); text-decoration: none; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 0.3rem; transition: gap 0.3s ease; }
+        .project-link:hover { gap: 0.6rem; }
+        .project-link-hf { color: var(--hf); }
+
+        /* Hugging Face Banner */
+        .hf-banner {
+            background: linear-gradient(135deg, rgba(255, 189, 89, 0.08), rgba(99, 102, 241, 0.08));
+            border: 1px solid rgba(255, 189, 89, 0.2); border-radius: 20px;
+            padding: 2rem; text-align: center; margin-bottom: 2rem; transition: all 0.3s ease;
+        }
+        .hf-banner:hover { border-color: var(--hf); transform: translateY(-2px); }
+        .hf-banner h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .hf-banner p { color: var(--text-secondary); margin-bottom: 1rem; }
+        .hf-badge {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 1rem; background: rgba(255, 189, 89, 0.15);
+            border: 1px solid rgba(255, 189, 89, 0.3); border-radius: 50px;
+            font-size: 0.9rem; color: var(--hf); font-weight: 600;
+        }
+
+        /* Google Cloud Banner */
+        .gcloud-banner {
+            background: linear-gradient(135deg, rgba(66, 133, 244, 0.08), rgba(139, 92, 246, 0.08));
+            border: 1px solid rgba(66, 133, 244, 0.2); border-radius: 20px;
+            padding: 2rem; text-align: center; margin-bottom: 2rem; transition: all 0.3s ease;
+        }
+        .gcloud-banner:hover { border-color: var(--gcloud); transform: translateY(-2px); }
+        .gcloud-banner h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .gcloud-banner p { color: var(--text-secondary); margin-bottom: 1rem; }
+        .gcloud-badge {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 1rem; background: rgba(66, 133, 244, 0.15);
+            border: 1px solid rgba(66, 133, 244, 0.3); border-radius: 50px;
+            font-size: 0.9rem; color: var(--gcloud); font-weight: 600;
+        }
+
+        /* Differentiators */
+        .diff-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+        .diff-card {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
+            padding: 2rem; transition: all 0.3s ease; position: relative; overflow: hidden;
+        }
+        .diff-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+            background: linear-gradient(90deg, var(--gradient-1), var(--gradient-2));
+            transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease;
+        }
+        .diff-card:hover::before { transform: scaleX(1); }
+        .diff-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+        .diff-emoji { font-size: 2.5rem; margin-bottom: 1rem; }
+        .diff-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; }
+        .diff-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+
+        /* Contact */
+        .contact-section { text-align: center; padding: 5rem 2rem; }
+        .contact-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 24px;
+            padding: 3rem; max-width: 700px; margin: 0 auto;
+        }
+        .contact-card h2 { font-size: 2rem; font-weight: 800; margin-bottom: 1rem; }
+        .contact-card p { color: var(--text-secondary); margin-bottom: 2rem; }
+        .contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+        .contact-link {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.75rem 1.5rem; background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; color: var(--text-primary); text-decoration: none;
+            font-weight: 600; transition: all 0.3s ease;
+        }
+        .contact-link:hover { border-color: var(--accent); background: var(--bg-hover); transform: translateY(-2px); }
+
+        /* Footer */
+        footer { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--border); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .about-grid { grid-template-columns: 1fr; }
+            .about-highlights { grid-template-columns: 1fr; }
+            .projects-grid { grid-template-columns: 1fr; }
+            .hero-buttons { flex-direction: column; align-items: center; }
+            .btn { width: 100%; max-width: 300px; justify-content: center; }
+            .journey-timeline { padding-left: 1.5rem; }
+            .journey-item { padding-left: 1rem; }
+        }
+
+        /* Scroll Animations */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    <div class="particles" id="particles"></div>
+
+    <!-- Navbar -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">Mário Mello</div>
+            <ul class="nav-links">
+                <li><a href="#journey">Trajetória</a></li>
+                <li><a href="#about">Sobre</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projetos</a></li>
+                <li><a href="#diferenciais">Diferenciais</a></li>
+                <li><a href="#contato">Contato</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="dot"></span>
+                Disponível para oportunidades
+            </div>
+            <h1>
+                Cientista de Dados<br>
+                <span class="gradient-text">& Engenheiro de IA</span>
+            </h1>
+            <p class="hero-subtitle">Transformando dados em decisões estratégicas</p>
+            <p class="hero-description">
+                Uma trajetória que atravessa setores: da <strong>área privada</strong> à <strong>Sociologia</strong>, 
+                até o <strong>setor público</strong>. Hoje aplico essa experiência diversificada para suportar o 
+                setor público, orquestrando agentes de IA para as áreas de <strong>Folha de Pagamento, Contabilidade, 
+                Licitações, Contratos e grandes bases de dados públicas</strong>.
+            </p>
+            <div class="hero-buttons">
+                <a href="#projects" class="btn btn-primary">Ver Projetos ↓</a>
+                <a href="https://github.com/mlmpbr" target="_blank" class="btn btn-secondary">
+                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24" style="margin-right:4px">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    GitHub
+                </a>
+                <a href="https://pmnvt-sobre.static.hf.space/index.html" target="_blank" class="btn btn-hf">
+                    🤗 Hugging Face
+                </a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Journey Section -->
+    <section id="journey" class="journey-section">
+        <div class="section-header reveal">
+            <span class="section-label">Minha Trajetória</span>
+            <h2 class="section-title">De Setor a Setor</h2>
+            <p class="section-subtitle">Uma carreira construída na diversidade de experiências</p>
+        </div>
+        <div class="journey-timeline">
+            <div class="journey-item reveal">
+                <span class="journey-tag tag-private">ÁREA PRIVADA</span>
+                <h3>Visão Analítica e Orientação a Resultados</h3>
+                <p>
+                    Iniciei minha carreira no setor privado, onde desenvolvi a capacidade de traduzir 
+                    métricas de negócio em ações concretas. Aprendi que dados sem contexto são apenas números — 
+                    e que a análise precisa gerar valor tangível.
+                </p>
+            </div>
+            <div class="journey-arrow">↓</div>
+            <div class="journey-item reveal">
+                <span class="journey-tag tag-social">SOCIOLOGIA</span>
+                <h3>Compreender o Mundo e Para Onde Caminhamos</h3>
+                <p>
+                    Sou um entusiasta da <strong>Sociologia</strong> e de como ela pode ajudar a compreender 
+                    o mundo que vivemos e para onde caminhamos. Essa perspectiva me permite enxergar padrões 
+                    sociais nos dados e construir soluções que respeitem o contexto humano por trás dos números.
+                </p>
+            </div>
+            <div class="journey-arrow">↓</div>
+            <div class="journey-item reveal">
+                <span class="journey-tag tag-public">SETOR PÚBLICO</span>
+                <h3>IA Aplicada à Gestão Pública</h3>
+                <p>
+                    Hoje aplico essa experiência diversificada para <strong>suportar o setor público</strong>, 
+                    orquestrando agentes de IA para as áreas de <strong>Folha de Pagamento, Contabilidade, 
+                    Licitações, Contratos e grandes bases de dados públicas</strong>. Pesquiso e atuo junto a 
+                    profissionais que estudam IA — como o <strong>JEPA</strong> (<em>Joint Embedded Predictive 
+                    Architecture</em>), e os impactos que a <strong>IA agentica</strong> causa no mundo corporativo atual.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About -->
+    <section id="about">
+        <div class="section-header reveal">
+            <span class="section-label">Sobre Mim</span>
+            <h2 class="section-title">Quem sou eu</h2>
+            <p class="section-subtitle">A interseção entre dados, IA e impacto social</p>
+        </div>
+        <div class="about-grid">
+            <div class="about-text reveal">
+                <p>
+                    Sou um <strong>Cientista de Dados</strong> com uma trajetória que atravessa setores. 
+                    Minha carreira começou na <strong>área privada</strong>, onde desenvolvi visão analítica 
+                    e orientação a resultados. Sou um entusiasta da <strong>Sociologia</strong> e de como ela 
+                    pode ajudar a compreender o mundo que vivemos e para onde caminhamos.
+                </p>
+                <p>
+                    Hoje aplico essa experiência diversificada para <strong>suportar o setor público</strong>, 
+                    orquestrando agentes de IA para as áreas de <strong>Folha de Pagamento, Contabilidade, 
+                    Licitações, Contratos e grandes bases de dados públicas</strong>. Pesquiso e atuo junto a 
+                    profissionais que estudam IA — como o <strong>JEPA</strong> (<em>Joint Embedded Predictive 
+                    Architecture</em>), e os impactos que a <strong>IA agentica</strong> causa no mundo corporativo atual.
+                </p>
+                <p>
+                    Minha stack combina <strong>Python, SQL (PostgreSQL/MySQL), Streamlit e Docker</strong> 
+                    com APIs de LLM como <strong>Gemini, Claude e GPT</strong> para pipelines que vão da 
+                    extração de PDF até relatórios executivos em PDF.
+                </p>
+            </div>
+            <div class="about-highlights">
+                <div class="highlight-card reveal">
+                    <div class="highlight-icon">🧠</div>
+                    <h3>Orquestração de Agentes</h3>
+                    <p>Sistemas multi-agente com especialistas em SQL, estatísticas e visualização</p>
+                </div>
+                <div class="highlight-card reveal">
+                    <div class="highlight-icon">📊</div>
+                    <h3>Análise de Folha</h3>
+                    <p>Pipeline completo: extração PDF → banco → dashboard → relatório executivo</p>
+                </div>
+                <div class="highlight-card reveal">
+                    <div class="highlight-icon">🔍</div>
+                    <h3>Validação Rigida</h3>
+                    <p>Comparo resultados de IA com SQL manual para garantir precisão absoluta</p>
+                </div>
+                <div class="highlight-card reveal">
+                    <div class="highlight-icon">🐳</div>
+                    <h3>Infra Local</h3>
+                    <p>Docker, PostgreSQL local e pipelines sem dependência de nuvem</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills">
+        <div class="section-header reveal">
+            <span class="section-label">Stack Tecnológico</span>
+            <h2 class="section-title">Minhas Ferramentas</h2>
+            <p class="section-subtitle">Tecnologias que domino e aplico diariamente</p>
+        </div>
+        <div class="skills-grid">
+            <div class="skill-category reveal">
+                <div class="skill-category-header">
+                    <div class="skill-category-icon" style="background: rgba(55, 118, 171, 0.2);">💻</div>
+                    <h3>Linguagens & Frameworks</h3>
+                </div>
+                <div class="skill-tags">
+                    <span class="skill-tag">Python</span><span class="skill-tag">SQL</span><span class="skill-tag">Streamlit</span>
+                    <span class="skill-tag">Pandas</span><span class="skill-tag">NumPy</span><span class="skill-tag">Scikit-Learn</span>
+                    <span class="skill-tag">Plotly</span><span class="skill-tag">Matplotlib</span>
+                </div>
+            </div>
+            <div class="skill-category reveal">
+                <div class="skill-category-header">
+                    <div class="skill-category-icon" style="background: rgba(65, 105, 225, 0.2);">🗄️</div>
+                    <h3>Bancos & Infra</h3>
+                </div>
+                <div class="skill-tags">
+                    <span class="skill-tag">PostgreSQL</span><span class="skill-tag">MySQL</span>
+                    <span class="skill-tag">Docker</span><span class="skill-tag">Git</span>
+                    <span class="skill-tag">Aiven Cloud</span><span class="skill-tag">Google Cloud</span>
+                </div>
+            </div>
+            <div class="skill-category reveal">
+                <div class="skill-category-header">
+                    <div class="skill-category-icon" style="background: rgba(66, 133, 244, 0.2);">🤖</div>
+                    <h3>IA & LLMs</h3>
+                </div>
+                <div class="skill-tags">
+                    <span class="skill-tag">Gemini API</span><span class="skill-tag">OpenAI API</span>
+                    <span class="skill-tag">Anthropic Claude</span><span class="skill-tag">Vertex AI</span>
+                    <span class="skill-tag">RAG</span><span class="skill-tag">Prompt Engineering</span>
+                </div>
+            </div>
+            <div class="skill-category reveal">
+                <div class="skill-category-header">
+                    <div class="skill-category-icon" style="background: rgba(16, 185, 129, 0.2);">📄</div>
+                    <h3>Processamento Docs</h3>
+                </div>
+                <div class="skill-tags">
+                    <span class="skill-tag">Tesseract OCR</span><span class="skill-tag">PDF Extraction</span>
+                    <span class="skill-tag">ReportLab</span><span class="skill-tag">FPDF</span>
+                    <span class="skill-tag">Data Cleaning</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hugging Face & Google Cloud -->
+    <section>
+        <div class="section-header reveal">
+            <span class="section-label">Plataformas</span>
+            <h2 class="section-title">Onde Meu Trabalho Vive</h2>
+        </div>
+        <div class="hf-banner reveal">
+            <h3>🤗 Hugging Face Spaces</h3>
+            <p>
+                Meus projetos de IA estão hospedados no Hugging Face, com demos interativas ao vivo. 
+                O NavegAI roda em tempo real, demonstrando pipelines de busca de funcionários e 
+                dashboards de folha de pagamento.
+            </p>
+            <a href="https://pmnvt-sobre.static.hf.space/index.html" target="_blank" class="hf-badge">
+                🤗 Ver Demo ao Vivo →
+            </a>
+        </div>
+        <div class="gcloud-banner reveal">
+            <h3>☁️ Google Cloud & Vertex AI</h3>
+            <p>
+                Utilizo ativamente o Google Cloud Platform e o Vertex AI Model Garden para acesso a 
+                modelos de linguagem de última geração (Gemini 2.5 Flash, Pro), integração de APIs de LLM 
+                em pipelines de produção e processamento de dados em escala com BigQuery.
+            </p>
+            <span class="gcloud-badge">☁️ Vertex AI · Model Garden · BigQuery</span>
+        </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects">
+        <div class="section-header reveal">
+            <span class="section-label">Portfólio</span>
+            <h2 class="section-title">Projetos em Destaque</h2>
+            <p class="section-subtitle">Sistemas que construí do zero com propósito</p>
+        </div>
+        <div class="projects-grid">
+            <div class="project-card reveal">
+                <div class="project-header">
+                    <div class="project-icon" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">📋</div>
+                    <h3>NavegAI — Análise de Folha Pública</h3>
+                </div>
+                <p class="project-desc">
+                    Orquestrador de Agentes de IA para análise completa de folha de pagamento do setor público. 
+                    Pipeline de busca, classificação de intenção e geração de relatórios executivos.
+                </p>
+                <ul class="project-features">
+                    <li>Pipeline de Busca de Funcionários com classificação de intenção</li>
+                    <li>Orquestrador multi-agente (SQL, estatísticas, visualização)</li>
+                    <li>Dashboards Streamlit com evolução salarial e projeções</li>
+                    <li>Geração de PDFs executivos com correlação e outliers</li>
+                    <li>Extração OCR de PDFs em grande volume</li>
+                </ul>
+                <div class="project-footer">
+                    <div class="project-stack">
+                        <span>Python</span><span>Streamlit</span><span>PostgreSQL</span><span>Docker</span><span>Gemini</span>
+                    </div>
+                    <div style="display:flex;gap:1rem">
+                        <a href="https://github.com/mlmpbr/navegai-rh" target="_blank" class="project-link">GitHub →</a>
+                        <a href="https://pmnvt-sobre.static.hf.space/index.html" target="_blank" class="project-link project-link-hf">🤗 Demo →</a>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card reveal">
+                <div class="project-header">
+                    <div class="project-icon" style="background: linear-gradient(135deg, #ec4899, #f43f5e);">🤖</div>
+                    <h3>Betelgeuse — Agente Social</h3>
+                </div>
+                <p class="project-desc">
+                    Agente inteligente para moderação e análise de engajamento em redes sociais. 
+                    Integração com Meta API para automação de comunidades digitais.
+                </p>
+                <ul class="project-features">
+                    <li>Moderação automática de comentários com sentiment analysis</li>
+                    <li>Análise de métricas de engajamento em MySQL</li>
+                    <li>Integração Meta Graph API (Facebook/Instagram)</li>
+                    <li>Pipeline de produção de vídeo para revisão</li>
+                </ul>
+                <div class="project-footer">
+                    <div class="project-stack">
+                        <span>Python</span><span>MySQL</span><span>Meta API</span><span>Streamlit</span>
+                    </div>
+                    <a href="https://github.com/mlmpbr/betelgeuse" target="_blank" class="project-link">Ver no GitHub →</a>
+                </div>
+            </div>
+            <div class="project-card reveal">
+                <div class="project-header">
+                    <div class="project-icon" style="background: linear-gradient(135deg, #10b981, #34d399);">📊</div>
+                    <h3>Congres — Analytics</h3>
+                </div>
+                <p class="project-desc">
+                    Plataforma de analytics para monitoramento de métricas de engajamento e acessos. 
+                    Análise temporal e segmentação de público com visualizações interativas.
+                </p>
+                <ul class="project-features">
+                    <li>Análise temporal de acessos e interações</li>
+                    <li>Segmentação de público por faixas etárias</li>
+                    <li>Relatórios automatizados com insights</li>
+                    <li>Dashboards responsivos em Streamlit</li>
+                </ul>
+                <div class="project-footer">
+                    <div class="project-stack">
+                        <span>Python</span><span>MySQL</span><span>Pandas</span><span>Matplotlib</span>
+                    </div>
+                    <a href="https://github.com/mlmpbr/congres-analytics" target="_blank" class="project-link">Ver no GitHub →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Differentiators -->
+    <section id="diferenciais">
+        <div class="section-header reveal">
+            <span class="section-label">Por que me contratar?</span>
+            <h2 class="section-title">O que me Diferencia</h2>
+            <p class="section-subtitle">Habilidades que vão além do código</p>
+        </div>
+        <div class="diff-grid">
+            <div class="diff-card reveal">
+                <div class="diff-emoji">🏗️</div>
+                <h3>Arquitetura de Agentes</h3>
+                <p>Construo orquestradores com agentes especializados para minimizar alucinações e maximizar precisão.</p>
+            </div>
+            <div class="diff-card reveal">
+                <div class="diff-emoji">🔍</div>
+                <h3>Validação Analítica</h3>
+                <p>Valido resultados de IA comparando com consultas SQL manuais. Zero tolerância a "alucinações".</p>
+            </div>
+            <div class="diff-card reveal">
+                <div class="diff-emoji">🐳</div>
+                <h3>Infraestrutura Local</h3>
+                <p>Docker, PostgreSQL local e execução de pipelines sem dependência de nuvem.</p>
+            </div>
+            <div class="diff-card reveal">
+                <div class="diff-emoji">📄</div>
+                <h3>Processamento de Docs</h3>
+                <p>OCR em grande volume, extração de PDF e geração de relatórios executivos automatizados.</p>
+            </div>
+            <div class="diff-card reveal">
+                <div class="diff-emoji">🧩</div>
+                <h3>Resolução de Problemas</h3>
+                <p>De debug de conexão MySQL até correção de pipelines. Não desisto até resolver.</p>
+            </div>
+            <div class="diff-card reveal">
+                <div class="diff-emoji">🌍</div>
+                <h3>Visão Multissetorial</h3>
+                <p>Experiência em privado, sociologia e público. Traduzo contextos complexos em soluções práticas.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contato" class="contact-section">
+        <div class="contact-card reveal">
+            <h2>Vamos construir algo juntos?</h2>
+            <p>
+                Estou aberto a oportunidades em Ciência de Dados, Engenharia de IA e 
+                Análise de Dados no setor público. Vamos conversar!
+            </p>
+            <div class="contact-links">
+                <a href="mailto:marioluizmello@gmail.com" class="contact-link">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    Email
+                </a>
+                <a href="https://www.linkedin.com/in/mariomello8/" class="contact-link" target="_blank">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                    LinkedIn
+                </a>
+                <a href="https://github.com/mlmpbr" class="contact-link" target="_blank">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    GitHub
+                </a>
+                <a href="https://huggingface.co/pmnvt" class="contact-link" target="_blank">
+                    <span style="font-size:1.2rem">🤗</span>
+                    Hugging Face
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 Mário Mello. Construído com 💜, Python e muito café.</p>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 30; i++) {
+            const p = document.createElement('div'); p.className = 'particle';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.animationDelay = Math.random() * 15 + 's';
+            p.style.animationDuration = (10 + Math.random() * 20) + 's';
+            particlesContainer.appendChild(p);
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('active'); });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        document.querySelectorAll('.journey-item').forEach(el => observer.observe(el));
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>
